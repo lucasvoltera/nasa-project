@@ -6453,6 +6453,10 @@
   "resolved" "https://registry.npmjs.org/nanoid/-/nanoid-3.3.6.tgz"
   "version" "3.3.6"
 
+"nasa-project@file:..":
+  "resolved" "file:.."
+  "version" "1.0.0"
+
 "natural-compare-lite@^1.4.0":
   "integrity" "sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g=="
   "resolved" "https://registry.npmjs.org/natural-compare-lite/-/natural-compare-lite-1.4.0.tgz"
