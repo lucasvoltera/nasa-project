@@ -45,7 +45,11 @@ function loadPlanetsData() {
     });
 }
 
+function getAllPlanets() {
+    return habitablePlanets;
+}
+
 export {
     loadPlanetsData,
-    habitablePlanets,
+    getAllPlanets,
 }
