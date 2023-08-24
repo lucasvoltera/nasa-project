@@ -1,4 +1,4 @@
-import { getAllLaunches, addNewLaunch } from '../../models/launches.model.js';
+import { getAllLaunches, addNewLaunch, existsLaunchWithId, abortLaunchById } from '../../models/launches.model.js';
 
 function httpGetAllLaunches(req, res) {
     // Array.from() is a method to create an array from an iterable
@@ -36,7 +36,33 @@ function httpAddNewLaunch(req, res) {
     return res.status(201).json(launch);
 }
 
+function httpAbortLaunch(req, res) {
+    // req.params is an object with the properties of the request parameters
+    // The request parameters are the parameters in the path of the route
+    // The parameter id is the flight number of the launch
+    const launchId = Number(req.params.id);
+
+    // Check if the launch exists
+    if (!existsLaunchWithId(launchId)) {
+        return res.status(404).json({
+            error: 'Launch not found'
+        });
+    }
+
+    // Check if the launch has already launched
+    const aborted = abortLaunchById(launchId);
+    if (!aborted) {
+        return res.status(400).json({
+            error: 'Launch not aborted'
+        });
+    }
+    
+    // The launch object is sent to the client
+    return res.status(200).json(aborted);
+}
+
 export {
     httpGetAllLaunches,
-    httpAddNewLaunch
+    httpAddNewLaunch,
+    httpAbortLaunch,
 }
