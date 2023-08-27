@@ -1,20 +1,80 @@
 import launchesDatabase from './launches.mongo.js';
 import planets from './planets.mongo.js';
+import axios from 'axios';
 
 // const launches = new Map();
 
-const launch = {
-    flightNumber: 100, // flight number
-    mission: 'Amos-17', // mission name
-    rocket: 'Falcon 9', // rocket name
-    launchDate: new Date('August 6, 2019'), // when's the launch? 
-    target: 'Kepler-442 b', // where's the launch going?
-    costumer: ['X', 'NASA', 'ZTM'], // who's paying for the launch?
-    upcoming: true, // is this a future launch or a past launch?
-    success: true, // did the launch succeed?
-};
+const SPACEX_API_URL = 'https://api.spacexdata.com/v4/launches/query';
 
-saveLaunch(launch);
+async function populateLaunches() {
+  console.log('Downloading launch data...');
+  const response = await axios.post(SPACEX_API_URL, {
+    query: {},
+    options: {
+      pagination: false,
+      populate: [
+        {
+          path: 'rocket',
+          select: {
+            name: 1
+          }
+        },
+        {
+          path: 'payloads',
+          select: {
+            'customers': 1
+          }
+        }
+      ]
+    }
+  });
+
+  if (response.status !== 200) {
+    console.log('Problem downloading launch data');
+    throw new Error('Launch data download failed');
+  }
+
+  const launchDocs = response.data.docs;
+  for (const launchDoc of launchDocs) {
+    const payloads = launchDoc['payloads'];
+    const customers = payloads.flatMap((payload) => {
+      return payload['customers'];
+    });
+
+    const launch = {
+      flightNumber: launchDoc['flight_number'],
+      mission: launchDoc['name'],
+      rocket: launchDoc['rocket']['name'],
+      launchDate: launchDoc['date_local'],
+      upcoming: launchDoc['upcoming'],
+      success: launchDoc['success'],
+      customers,
+    };
+
+    console.log(`${launch.flightNumber} ${launch.mission}`);
+
+    await saveLaunch(launch);
+  }
+}
+
+
+async function loadLaunchData() {
+  const firstLaunch = await findLaunch({
+    flightNumber: 1,
+    rocket: 'Falcon 1',
+    mission: 'FalconSat',
+  });
+  if (firstLaunch) {
+    console.log('Launch data already loaded!');
+  } else {
+    await populateLaunches();
+  }
+}
+
+async function findLaunch(filter) {
+  return await launchesDatabase.findOne(filter);
+}
+
 
 async function getLatestFlightNumber() {
     const latestLaunch = await launchesDatabase
@@ -44,10 +104,6 @@ async function getAllLaunches(skip, limit) {
       .limit(limit);
 }
 
-async function findLaunch(filter) {
-    return await launchesDatabase.findOne(filter);
-}
-  
 
 async function existsLaunchWithId(launchId) {
     return await findLaunch({
@@ -88,6 +144,7 @@ async function scheduleNewLaunch(launch) {
 }
 
 export {
+    loadLaunchData,
     getAllLaunches,
     existsLaunchWithId,
     scheduleNewLaunch,
