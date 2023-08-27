@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { httpGetAllLaunches, httpAddNewLaunch, httpAbortLaunch } from "./launches.controller.js";
 
-const launchesRounter = Router();
+const launchesRouter = Router();
 
-launchesRounter.get('/', httpGetAllLaunches);
-launchesRounter.post('/', httpAddNewLaunch);
-launchesRounter.delete('/:id', httpAbortLaunch);
+launchesRouter.get('/', httpGetAllLaunches);
+launchesRouter.post('/', httpAddNewLaunch);
+launchesRouter.delete('/:id', httpAbortLaunch);
 
-export default launchesRounter;
+export default launchesRouter;
