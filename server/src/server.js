@@ -3,7 +3,9 @@ import app from './app.js';
 import { loadPlanetsData } from './models/planets.model.js';
 import { mongoConnect, mongoDisconnect } from './services/mongo.js';
 import { loadLaunchData } from './models/launches.model.js';
+import { config } from 'dotenv';
 
+config(); // Carrega as variáveis de ambiente do arquivo .env
 
 const PORT = process.env.PORT || 8000; // Porta que não há conflito com o frontend
 const server = http.createServer(app);
