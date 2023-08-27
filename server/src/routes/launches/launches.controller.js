@@ -1,14 +1,14 @@
-import { getAllLaunches, addNewLaunch, existsLaunchWithId, abortLaunchById } from '../../models/launches.model.js';
+import { getAllLaunches, scheduleNewLaunch, existsLaunchWithId, abortLaunchById } from '../../models/launches.model.js';
 
-function httpGetAllLaunches(req, res) {
+async function httpGetAllLaunches(req, res) {
     // Array.from() is a method to create an array from an iterable
     // launches.values() is an iterable of the values of the launches map
     // The values of the launches map are the launch objects
     // The launch objects are converted to an array and sent to the client
-    return res.status(200).json(getAllLaunches());
+    return res.status(200).json(await getAllLaunches());
 }
 
-function httpAddNewLaunch(req, res) {
+async function httpAddNewLaunch(req, res) {
 
     // req.body is an object with the properties of the request body
     // The request body is an object with the properties of the launch object
@@ -32,33 +32,30 @@ function httpAddNewLaunch(req, res) {
 
     // The launch object is added to the launches map
     // The launch object is sent to the client
-    addNewLaunch(launch);
+    await scheduleNewLaunch(launch);
     return res.status(201).json(launch);
 }
 
-function httpAbortLaunch(req, res) {
-    // req.params is an object with the properties of the request parameters
-    // The request parameters are the parameters in the path of the route
-    // The parameter id is the flight number of the launch
+async function httpAbortLaunch(req, res) {
     const launchId = Number(req.params.id);
-
-    // Check if the launch exists
-    if (!existsLaunchWithId(launchId)) {
-        return res.status(404).json({
-            error: 'Launch not found'
-        });
+  
+    const existsLaunch = await existsLaunchWithId(launchId);
+    if (!existsLaunch) {
+      return res.status(404).json({
+        error: 'Launch not found',
+      });
     }
-
-    // Check if the launch has already launched
-    const aborted = abortLaunchById(launchId);
+  
+    const aborted = await abortLaunchById(launchId);
     if (!aborted) {
-        return res.status(400).json({
-            error: 'Launch not aborted'
-        });
+      return res.status(400).json({
+        error: 'Launch not aborted',
+      });
     }
-    
-    // The launch object is sent to the client
-    return res.status(200).json(aborted);
+  
+    return res.status(200).json({
+      ok: true,
+    });
 }
 
 export {

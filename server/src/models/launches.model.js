@@ -1,56 +1,95 @@
-const launches = new Map();
+import launchesDatabase from './launches.mongo.js';
+import planets from './planets.mongo.js';
 
-let latestFlightNumber = 100;
+// const launches = new Map();
 
 const launch = {
     flightNumber: 100, // flight number
     mission: 'Amos-17', // mission name
     rocket: 'Falcon 9', // rocket name
     launchDate: new Date('August 6, 2019'), // when's the launch? 
-    target: 'Geostationary Transfer Orbit (GTO)', // where's the launch going?
+    target: 'Kepler-442 b', // where's the launch going?
     costumer: ['X', 'NASA', 'ZTM'], // who's paying for the launch?
     upcoming: true, // is this a future launch or a past launch?
     success: true, // did the launch succeed?
 };
 
-// set the flight number as the key and the launch object as the value
-launches.set(launch.flightNumber, launch);
+saveLaunch(launch);
 
-function getAllLaunches() {
-    return Array.from(launches.values());
+async function getLatestFlightNumber() {
+    const latestLaunch = await launchesDatabase
+      .findOne()
+      .sort('-flightNumber');
+  
+    if (!latestLaunch) {
+      return DEFAULT_FLIGHT_NUMBER;
+    }
+  
+    return latestLaunch.flightNumber;
+  }
+  
+async function saveLaunch(launch) {
+    await launchesDatabase.findOneAndUpdate({
+      flightNumber: launch.flightNumber,
+    }, launch, {
+      upsert: true,
+    });
 }
 
-function addNewLaunch(launch) {
-    latestFlightNumber++;
-    // set the flight number as the key and the launch object as the value
-    // Object.assign() is a method to copy the properties of an object to another object
-    // The first argument is the target object
-    // The second argument is the source object
-    // The method returns the target object
-    launches.set(latestFlightNumber, Object.assign(launch, {
-            flightNumber: latestFlightNumber,
-            upcoming: true,
-            costumers: ['NASA'],
-            success: true,
-        })
-    );
+async function getAllLaunches(skip, limit) {
+    return await launchesDatabase
+      .find({}, { '_id': 0, '__v': 0 })
+      .sort({ flightNumber: 1 })
+      .skip(skip)
+      .limit(limit);
 }
 
-function existsLaunchWithId(id) {
-    return launches.has(id);
+async function findLaunch(filter) {
+    return await launchesDatabase.findOne(filter);
+}
+  
+
+async function existsLaunchWithId(launchId) {
+    return await findLaunch({
+      flightNumber: launchId,
+    });
 }
 
-function abortLaunchById(id) {
-    const aborted = launches.get(id);
-    aborted.upcoming = false;
-    aborted.success = false;
-    return aborted;
+async function abortLaunchById(launchId) {
+    const aborted = await launchesDatabase.updateOne({
+      flightNumber: launchId,
+    }, {
+      upcoming: false,
+      success: false,
+    });
+  
+    return aborted.modifiedCount === 1;
 }
 
+async function scheduleNewLaunch(launch) {
+    const planet = await planets.findOne({
+      keplerName: launch.target,
+    });
+  
+    if (!planet) {
+      throw new Error('No matching planet found');
+    }
+  
+    const newFlightNumber = await getLatestFlightNumber() + 1;
+  
+    const newLaunch = Object.assign(launch, {
+      success: true,
+      upcoming: true,
+      customers: ['Space X', 'NASA'],
+      flightNumber: newFlightNumber,
+    });
+  
+    await saveLaunch(newLaunch);
+}
 
 export {
     getAllLaunches,
-    addNewLaunch,
     existsLaunchWithId,
+    scheduleNewLaunch,
     abortLaunchById
 }

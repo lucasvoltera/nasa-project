@@ -26,6 +26,8 @@
   "homepage": "https://github.com/lucasvoltera/nasa-project#readme",
   "dependencies": {
     "concurrently": "^8.2.1",
+    "mongodb": "^5.8.1",
+    "mongoose": "^7.4.4",
     "morgan": "^1.10.0"
   }
 }
