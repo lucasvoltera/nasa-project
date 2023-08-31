@@ -6456,6 +6456,11 @@
 "nasa-project@file:..":
   "resolved" "file:.."
   "version" "1.0.0"
+  dependencies:
+    "concurrently" "^8.2.1"
+    "mongodb" "^5.8.1"
+    "mongoose" "^7.4.4"
+    "morgan" "^1.10.0"
 
 "natural-compare-lite@^1.4.0":
   "integrity" "sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g=="
