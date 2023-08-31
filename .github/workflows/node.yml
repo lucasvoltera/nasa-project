@@ -9,8 +9,8 @@ on: # the event that triggers the workflow
       runs-on: ubuntu-latest # run the job on the latest version of Ubuntu Linux
       steps: # a step is a set of tasks performed by a job
         - uses: actions/checkout@v2 # check out the repository code in the virtual environment
-        - name: Use Node.js 16.x # use Node.js 12.x in the virtual environment
-          uses: actions/setup-node@v1 # set up the Node.js virtual environment
+        - name: Use Node.js 16 # use Node.js 12.x in the virtual environment
+          uses: actions/setup-node@v2 # set up the Node.js virtual environment
           with:
             node-version: '16'
         - run: npm install
