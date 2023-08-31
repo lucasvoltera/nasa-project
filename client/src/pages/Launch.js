@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Appear, Button, Loading, Paragraph } from "arwes";
+import { Button, Loading, Paragraph } from "arwes";
 import Clickable from "../components/Clickable";
 
 const Launch = (props) => {
