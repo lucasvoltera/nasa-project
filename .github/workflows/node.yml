@@ -1,9 +1,9 @@
 name: NASA Project CI # name of the workflow
 on: # the event that triggers the workflow
   push: # run tests on push to master
-    branches: [master] # run tests on push to master
+    branches: [main] # run tests on push to master
   pull_request: # run tests on pull requests to master
-    branches: [master] # run tests on pull requests to master
+    branches: [main] # run tests on pull requests to master
   jobs: # a job is a set of steps that execute on the same runner
     build: # the name of the job
       runs-on: ubuntu-latest # run the job on the latest version of Ubuntu Linux
