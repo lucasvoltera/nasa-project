@@ -12,9 +12,6 @@ on: # the event that triggers the workflow
         - name: Use Node.js 16.x # use Node.js 12.x in the virtual environment
           uses: actions/setup-node@v1 # set up the Node.js virtual environment
           with:
-            node-version: 16.x
-        - name: npm install, build, and test
-          run: |
-            npm install
-            npm run build --if-present
-            npm run test --if-present
+            node-version: '16'
+        - run: npm install
+        - run: npm run build --prefix client
