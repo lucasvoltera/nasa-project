@@ -5,7 +5,7 @@ Projeto Controle de Missão da NASA
 
 Esta API foi construída para realizar operações de agendamento, alterações e remoção de missões espaciais. A API se integra ao MongoDB, um banco de dados não relacional, e está conectada a um frontend que serve como a interface principal para o controle de missões.
 
-![Home Page](imgs\homepage.png)
+![Home Page](imgs/homepage.png)
 
 
 * Certifique-se de ter o Node.js instalado.
