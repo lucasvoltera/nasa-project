@@ -17,7 +17,6 @@ Esta API foi construída para realizar operações de agendamento, alterações 
 
 * No terminal, execute: npm run deploy
 * Acesse o frontend do controle de missão em localhost:8000 e agende um lançamento interestelar!
-and schedule an interstellar launch!
 
 ## Executando os Testes
 
