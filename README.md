@@ -13,13 +13,13 @@ Esta API foi construída para realizar operações de agendamento, alterações 
 * Crie um arquivo server/.env com uma propriedade MONGO_URL configurada com a string de conexão do seu MongoDB.
 * No terminal, execute: npm install
 
-Executando o Projeto
+## Executando o Projeto
 
 * No terminal, execute: npm run deploy
 * Acesse o frontend do controle de missão em localhost:8000 e agende um lançamento interestelar!
 and schedule an interstellar launch!
 
-Executando os Testes
+## Executando os Testes
 
 Para executar testes automatizados, execute npm test. Isso fará o seguinte:
 
